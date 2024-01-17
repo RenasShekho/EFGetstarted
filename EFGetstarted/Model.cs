@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using EFGetstarted;
 
 public class BloggingContext : DbContext
 {
     public DbSet<Blog> Blogs { get; set; }
     public DbSet<Post> Posts { get; set; }
+    public DbSet<EFGetstarted.Task> Tasks { get; set; }
+    public DbSet<ToDo> Todos { get; set; }
 
     public string DbPath { get; }
 
@@ -19,6 +21,7 @@ public class BloggingContext : DbContext
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
         DbPath = System.IO.Path.Join(path, "blogging.db");
+        Console.WriteLine("Database location : " + DbPath);
     }
 
     // The following configures EF to create a Sqlite database file in the

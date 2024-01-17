@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EFGetstarted;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Reflection.Metadata;
 
@@ -29,3 +31,50 @@ db.SaveChanges();
 Console.WriteLine("Delete the blog");
 db.Remove(blog);
 db.SaveChanges();
+
+static void Main()
+{
+    using var db = new BloggingContext();
+    using (var context = new BloggingContext())
+    {
+        var tasks = db.Tasks.Include(t => t.Todos).ToList();
+
+        foreach (var task in tasks)
+        {
+            Console.WriteLine($"Task: {task.Name}");
+            foreach (var todo in task.Todos)
+            {
+                Console.WriteLine($"  Todo: {todo.Name} (Complete:{todo.IsComplete})");
+            }
+        }
+    }
+
+}
+
+static void seedTasks(BloggingContext db)
+{
+    var produceSoftwareTask = new EFGetstarted.Task
+    {
+        Name = "Produce software",
+        Todos = new List<ToDo>
+        {
+                new ToDo { Name = "Write code", IsComplete = false },
+                new ToDo { Name = "Compile source", IsComplete = false },
+                new ToDo { Name = "Test program", IsComplete = false }
+            }
+    };
+
+    var brewCoffeeTask = new EFGetstarted.Task
+    {
+        Name = "Brew coffee",
+        Todos = new List<ToDo>
+        {
+                new ToDo { Name = "Pour water", IsComplete = false },
+                new ToDo { Name = "Pour coffee", IsComplete = false },
+                new ToDo { Name = "Turn on", IsComplete = false }
+            }
+    };
+
+}
+   
+
