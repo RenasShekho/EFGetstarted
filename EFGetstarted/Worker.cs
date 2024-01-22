@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace EFGetstarted
 {
-    public class ToDo
+    public class Worker
     {
-        public int ToDoId { get; set; }
+        public int WorkerId { get; set; }
         public string Name { get; set; }
-        public bool IsComplete { get; set; }
-        public string CurrentTodo {  get; set; }
+        public List<Team>? Teams { get; set; }
     }
 }

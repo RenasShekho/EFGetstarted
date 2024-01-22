@@ -9,13 +9,23 @@ using EFGetstarted;
 
 public class BloggingContext : DbContext
 {
-    public DbSet<Blog> Blogs { get; set; }
-    public DbSet<Post> Posts { get; set; }
+ 
     public DbSet<EFGetstarted.Task> Tasks { get; set; }
     public DbSet<ToDo> Todos { get; set; }
+    public DbSet<Team> Teams { get; set; }
+    public DbSet<Worker> Workers { get; set; }
+    public DbSet<TeamWorker> TeamsWorkers { get; set; }
+
+
 
     public string DbPath { get; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<TeamWorker>()
+            .HasKey(p => new { p.TeamId, p.WorkerId });
+    }   
     public BloggingContext()
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
@@ -28,22 +38,4 @@ public class BloggingContext : DbContext
     // special "local" folder for your platform.
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options.UseSqlite($"Data Source={DbPath}");
-}
-
-public class Blog
-{
-    public int BlogId { get; set; }
-    public string Url { get; set; }
-
-    public List<Post> Posts { get; } = new();
-}
-
-public class Post
-{
-    public int PostId { get; set; }
-    public string Title { get; set; }
-    public string Content { get; set; }
-
-    public int BlogId { get; set; }
-    public Blog Blog { get; set; }
 }

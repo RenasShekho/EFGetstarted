@@ -8,35 +8,11 @@ public class Program
 {
     static void Main(string[] args)
     {
+        //Instance of BloggingContext class
         using var db = new BloggingContext();
-
-        // Note: This sample requires the database to be created before running.
-        Console.WriteLine($"Database path: {db.DbPath}.");
-
-        // Create
-        Console.WriteLine("Inserting a new blog");
-        db.Add(new Blog { Url = "http://blogs.msdn.com/adonet" });
-        db.SaveChanges();
-
-        // Read
-        Console.WriteLine("Querying for a blog");
-        var blog = db.Blogs
-            .OrderBy(b => b.BlogId)
-            .First();
-
-        // Update
-        Console.WriteLine("Updating the blog and adding a post");
-        blog.Url = "https://devblogs.microsoft.com/dotnet";
-        blog.Posts.Add(
-            new Post { Title = "Hello World", Content = "I wrote an app using EF Core!" });
-        db.SaveChanges();
-
-        // Delete
-        Console.WriteLine("Delete the blog");
-        db.Remove(blog);
-        db.SaveChanges();
-
+        // call this method with argument
         seedTasks(db);
+        seedWorkers(db);
 
         using (var context = new BloggingContext())
         {
@@ -53,10 +29,44 @@ public class Program
             }
         }
 
-        }
+    }
+    static void seedWorkers(BloggingContext db)
+    {
+        using (var ctx = new BloggingContext())
+        {
+            //Frontend
+            Worker Steen = new() { Name = "Steen Secher" };
+            Worker Ejvind = new() { Name = "Ejvind Møller" };
+            Worker Konrad = new() { Name = "Konrad Sommer" };
+            Team Frontend = new() { Name = "Frontend" };
 
+            //Backend
+            Worker Sofus = new() { Name = "Sofus Lotus" };
+            Worker Remo = new() { Name = "Remo Lademann" };
+            Team Backend = new() { Name = "Backend" };
+            //Testere
+            Worker Ella = new() { Name = "Ella Fanth" };
+            Worker Anne = new() { Name = "Anne Dam" };
+            Team Testere = new() { Name = "Testere" };
+
+            ctx.TeamsWorkers.Add(new TeamWorker { Team = Frontend, Worker = Steen });
+            ctx.TeamsWorkers.Add(new TeamWorker { Team = Frontend, Worker = Ejvind });
+            ctx.TeamsWorkers.Add(new TeamWorker { Team = Frontend, Worker = Konrad });
+
+            ctx.TeamsWorkers.Add(new TeamWorker { Team = Backend, Worker = Steen });
+            ctx.TeamsWorkers.Add(new TeamWorker { Team = Backend, Worker = Sofus });
+            ctx.TeamsWorkers.Add(new TeamWorker { Team = Backend, Worker = Remo });
+
+            ctx.TeamsWorkers.Add(new TeamWorker { Team = Testere, Worker = Ella });
+            ctx.TeamsWorkers.Add(new TeamWorker { Team = Testere, Worker = Anne });
+            ctx.TeamsWorkers.Add(new TeamWorker { Team = Testere, Worker = Sofus });
+
+        }
+        db.SaveChanges();
+    }
     static void seedTasks(BloggingContext db)
     {
+        //add two new task with names 1-produceSoftwareTas 2-brewCoffeeTask 
         var produceSoftwareTask = new EFGetstarted.Task
         {
             Name = "Produce software",
@@ -76,10 +86,11 @@ public class Program
                     new ToDo { Name = "Pour water", IsComplete = false },
                     new ToDo { Name = "Pour coffee", IsComplete = false },
                     new ToDo { Name = "Turn on", IsComplete = false }
-                }
+            }
         };
+
         db.Tasks.AddRange(produceSoftwareTask, brewCoffeeTask);
-        db.SaveChanges(); 
+        db.SaveChanges();
 
 
     }
